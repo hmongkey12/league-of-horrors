@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.league.game.Handlers.HttpHandler;
 import com.league.game.Handlers.NetworkHandler;
 import com.league.game.Handlers.UDPInputHandler;
 import com.league.game.Handlers.UDPNetworkHandler;
@@ -21,6 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.IOException;
 import java.util.*;
 
 @Getter
@@ -49,6 +51,7 @@ public class LeagueOfHorrors extends Game {
     @SuppressWarnings("unchecked")
     public void create() {
         SpringApplication.run(LeagueOfHorrors.class);
+//        HttpHandler.requestUserData("bob", "1234");
         playerId = UUID.randomUUID().toString();
         udpNetworkHandler = new UDPNetworkHandler();
         heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
