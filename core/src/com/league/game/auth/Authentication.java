@@ -25,11 +25,11 @@ public class Authentication {
         }
     }
 
-    public URL register(String username, String password) {
+    public URL register(String username, String password) throws MalformedURLException, UnsupportedEncodingException {
 //      MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 //      byte[] hashedPassword = messageDigest.digest(password.getBytes());
 //      createURLWithPassword(username, hashedPassword.toString());
-        return null;
+        return createURLWithQueryParameters(username, password);
     }
 
     private URL createURLWithQueryParameters(String username, String password) throws MalformedURLException, UnsupportedEncodingException {
@@ -41,8 +41,7 @@ public class Authentication {
         return new URL(urlBuilder.toString());
     }
 
-    private URL createURLWithRequestBody(String username, String password) throws MalformedURLException {
-        URL url = new URL(DATABASE_URI);
+    private URL createURLWithoutQueryParameters(String username, String password) throws MalformedURLException {
         return new URL(DATABASE_URI);
     }
 }

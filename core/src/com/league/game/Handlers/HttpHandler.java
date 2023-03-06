@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 @Slf4j
@@ -22,30 +23,19 @@ public class HttpHandler {
         Scanner scanner = new Scanner(System.in);
         String requestType = null;
         Authentication authentication = new Authentication();
-        while(responseData == null) {
+        int responseCode = 0;
+        while(responseCode != HttpURLConnection.HTTP_OK) {
             try {
                 requestType = scanner.nextLine();
                 HttpURLConnection urlConnection = null;
                 if (requestType.equalsIgnoreCase("login")) {
                     URL url = authentication.login(username, password);
-                    System.out.println(url.toString());
                     urlConnection = configureUrlConnection(url, "GET");
+                    responseCode = performGetRequest(urlConnection);
                 } else if (requestType.equalsIgnoreCase("register")) {
                     URL url = authentication.register(username, password);
-                    System.out.println(url.toString());
                     urlConnection = configureUrlConnection(url, "POST");
-                }
-                if (urlConnection != null){
-                    BufferedReader bufferedReader = null;
-                    InputStreamReader inputStreamReader = null;
-                    int responseCode = urlConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        inputStreamReader = new InputStreamReader(urlConnection.getInputStream());
-                        bufferedReader = new BufferedReader(inputStreamReader);
-                        responseData = bufferedReader.readLine();
-                        bufferedReader.close();
-                        inputStreamReader.close();
-                    }
+                    responseCode = performPostRequest(urlConnection);
                 }
             } catch (SocketTimeoutException e) {
             } catch (UnsupportedEncodingException e) {
@@ -60,25 +50,60 @@ public class HttpHandler {
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
         }
-        System.out.println("reponse data: " + responseData);
     }
 
     private static HttpURLConnection configureUrlConnection (URL url, String method) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setConnectTimeout(5000);
         urlConnection.setReadTimeout(5000);
-        urlConnection.setRequestProperty("Content-Type", "text/plain");
         if (method.equals(Net.HttpMethods.GET)) {
+            urlConnection.setRequestProperty("Content-Type", "text/plain");
             urlConnection.setRequestMethod("GET");
         } else if (method.equals(Net.HttpMethods.POST)) {
+            urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
-//            JSONObject json = new JSONObject();
-//            json.put("name", "bob");
-//            json.put("password", "1234");
         }
         return urlConnection;
+    }
+
+    private static int performGetRequest(HttpURLConnection urlConnection) throws IOException {
+        if (urlConnection != null){
+            BufferedReader bufferedReader = null;
+            InputStreamReader inputStreamReader = null;
+            int responseCode = urlConnection.getResponseCode();
+            String responseData;
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                inputStreamReader = new InputStreamReader(urlConnection.getInputStream());
+                bufferedReader = new BufferedReader(inputStreamReader);
+                responseData = bufferedReader.readLine();
+                bufferedReader.close();
+                inputStreamReader.close();
+                return HttpURLConnection.HTTP_OK;
+            }
+            return HttpURLConnection.HTTP_BAD_REQUEST;
+        }
+        return HttpURLConnection.HTTP_BAD_REQUEST;
+    }
+
+    private static int performPostRequest(HttpURLConnection urlConnection) throws IOException, JSONException {
+        if (urlConnection != null) {
+            OutputStream outputStream = urlConnection.getOutputStream();
+            byte[] outgoingData = null;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username","alice");
+            jsonObject.put("password","1234");
+            outgoingData = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
+            outputStream.write(outgoingData);
+            outputStream.flush();
+            outputStream.close();
+            int responseCode = urlConnection.getResponseCode();
+            return responseCode;
+        }
+        return HttpURLConnection.HTTP_BAD_REQUEST;
     }
 }
