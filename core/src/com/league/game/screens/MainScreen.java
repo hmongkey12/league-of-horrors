@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 
 public class MainScreen extends ScreenAdapter {
+    private static final int BUTTON_WIDTH = 150;
+    private static final int BUTTON_HEIGHT = 50;
     private Stage stage;
     private LeagueOfHorrors gameManager;
     private TextField usernameField, passwordField;
@@ -27,69 +29,16 @@ public class MainScreen extends ScreenAdapter {
         this.gameManager = gameManager;
     }
 
-
     @Override
-    public void show(){
-            stage = new Stage();
-            Gdx.input.setInputProcessor(stage);
-            Table table = new Table();
-            table.setFillParent(true);
-            usernameField = new TextField("", new TextField.TextFieldStyle(new BitmapFont(), Color.BLACK, null, null, null));
-            usernameField.setMessageText("Enter username");
-            usernameField.setAlignment(Align.center);
-            usernameField.setFocusTraversal(false);
-            table.add(usernameField).pad(10).colspan(2).width(400).height(50);
-            table.row();
+    public void show() {
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
 
-            passwordField = new TextField("", new TextField.TextFieldStyle(new BitmapFont(), Color.BLACK, null, null, null));
-            passwordField.setMessageText("Enter password");
-            passwordField.setPasswordMode(true);
-            passwordField.setPasswordCharacter('*');
-            passwordField.setAlignment(Align.center);
-            passwordField.setFocusTraversal(false);
-            table.add(passwordField).pad(10).colspan(2).width(400).height(50);
-            table.row();
+        Table table = createTable();
+        stage.addActor(table);
 
-        usernameField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // TODO: handle change
-            }
-        });
-
-        passwordField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // TODO: handle change
-            }
-        });
-
-
-        TextButton loginButton = new TextButton("Login", new TextButton.TextButtonStyle(null, null, null, new BitmapFont()));
-            loginButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    String username = usernameField.getText();
-                    String password = passwordField.getText();
-                    // TODO: handle login
-                }
-            });
-            table.add(loginButton).pad(10).width(150).height(50);
-
-            TextButton registerButton = new TextButton("Register", new TextButton.TextButtonStyle(null, null, null, new BitmapFont()));
-            registerButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    String username = usernameField.getText();
-                    String password = passwordField.getText();
-                    // TODO: handle registration
-                }
-            });
-
-            Gdx.input.setOnscreenKeyboardVisible(true);
-            stage.setKeyboardFocus(usernameField);
-            table.add(registerButton).pad(10).width(150).height(50);
-            stage.addActor(table);
+        Gdx.input.setOnscreenKeyboardVisible(true);
+        stage.setKeyboardFocus(usernameField);
     }
 
     @Override
@@ -108,5 +57,69 @@ public class MainScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    private class TextFieldChangeListener extends ChangeListener {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+            // TODO: handle change
+        }
+    }
+
+    private TextField createTextField(String messageText, boolean password) {
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle(new BitmapFont(), Color.BLACK, null, null, null);
+        TextField textField = new TextField("", style);
+        textField.setMessageText(messageText);
+        if (password) {
+            textField.setPasswordCharacter('*');
+            textField.setPasswordMode(true);
+        }
+        textField.setAlignment(Align.center);
+        textField.setFocusTraversal(false);
+
+        textField.addListener(new TextFieldChangeListener());
+        return textField;
+    }
+
+    private Table createTable() {
+        Table table = new Table();
+        table.setFillParent(true);
+        usernameField = createTextField("Enter username", false);
+        passwordField = createTextField("Enter password", true);
+        table.add(usernameField).pad(10).colspan(2).width(400).height(50);
+        table.row();
+        table.add(passwordField).pad(10).colspan(2).width(400).height(50);
+        table.row();
+        table.add(createButton("Login")).pad(10).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+        table.add(createButton("Register")).pad(10).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+        return table;
+    }
+
+    private TextButton createButton(final String buttonText) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(null, null, null, new BitmapFont());
+        TextButton button = new TextButton(buttonText, style);
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (buttonText.equals("Login")) {
+                    handleLogin();
+                } else if (buttonText.equals("Register")) {
+                    handleRegistration();
+                }
+            }
+        });
+        return button;
+    }
+
+    private void handleLogin() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        // TODO: handle login
+    }
+
+    private void handleRegistration() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        // TODO: handle registration
     }
 }
