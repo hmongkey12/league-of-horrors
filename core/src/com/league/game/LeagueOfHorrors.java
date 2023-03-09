@@ -53,21 +53,19 @@ public class LeagueOfHorrors extends Game {
     public void create() {
         SpringApplication.run(LeagueOfHorrors.class);
 //        HttpHandler.requestUserData("bob", "1234");
-
-        setScreen(new MainScreen(this));
-
-//        playerId = UUID.randomUUID().toString();
-//        udpNetworkHandler = new UDPNetworkHandler();
-//        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
-//        spriteBatch = new SpriteBatch();
-//		ApplicationContext ctx = new AnnotationConfigApplicationContext(LeagueOfHorrors.class);
-//        assetManager = (AssetManager) ctx.getBean("assetManager");
-//        abilityEntityMap = (Map<String, List<AbilityEntity>>) ctx.getBean("abilityEntityMap");
-//        animationMap = (Map<String, Map<String, Animation<TextureRegion>>>) ctx.getBean("animationMap");
-//        heroes = new HashMap<String, HeroGameEntity>();
-//        if (udpNetworkHandler.getClientSocket() != null) {
-//            setScreen(new HeroSelectionScreen(this));
-//        }
+//        setScreen(new MainScreen(this));
+        playerId = UUID.randomUUID().toString();
+        udpNetworkHandler = new UDPNetworkHandler();
+        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
+        spriteBatch = new SpriteBatch();
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(LeagueOfHorrors.class);
+        assetManager = (AssetManager) ctx.getBean("assetManager");
+        abilityEntityMap = (Map<String, List<AbilityEntity>>) ctx.getBean("abilityEntityMap");
+        animationMap = (Map<String, Map<String, Animation<TextureRegion>>>) ctx.getBean("animationMap");
+        heroes = new HashMap<String, HeroGameEntity>();
+        if (udpNetworkHandler.getClientSocket() != null) {
+            setScreen(new HeroSelectionScreen(this));
+        }
     }
 
     @Override

@@ -15,8 +15,7 @@ import java.util.Map;
 public class UDPStateHandler {
     public static Map<String, HeroGameEntity> replicateServerState(SerializableGameState gameState) {
         Map<String, HeroGameEntity> newPlayersOnClient = new HashMap<String, HeroGameEntity>();
-        for (Map.Entry<String, SerializableHeroEntity> entry : gameState.getConnectedPlayers().entrySet()) {
-            SerializableHeroEntity serializableHeroEntity = entry.getValue();
+        for (SerializableHeroEntity serializableHeroEntity : gameState.getConnectedPlayers().values()) {
             HeroGameEntity heroGameEntity = new HeroGameEntity();
             heroGameEntity.setHeroName(serializableHeroEntity.getHeroName());
             heroGameEntity.setHeroId(serializableHeroEntity.getId());
@@ -34,21 +33,19 @@ public class UDPStateHandler {
     }
 
     private static FacingDirection getFacingDirection(String facingDirection) {
-        return (facingDirection.equals(FacingDirection.LEFT.getDirection()) ?
-                FacingDirection.LEFT : (facingDirection.equals(FacingDirection.RIGHT.getDirection())) ?
-                FacingDirection.RIGHT : FacingDirection.NONE);
+        return FacingDirection.valueOf(facingDirection.toUpperCase());
     }
 
     private static List<AbilityEntity> mapAbilityToHero(List<SerializableAbilityEntity> serializableAbilityEntities) {
         List<AbilityEntity> abilityEntities = new ArrayList<AbilityEntity>();
-        for (int i = 0; i < serializableAbilityEntities.size(); i++) {
+        for (SerializableAbilityEntity serializableAbilityEntity : serializableAbilityEntities) {
             AbilityEntity abilityEntity = new AbilityEntity();
-            abilityEntity.setAbilityName(serializableAbilityEntities.get(i).getAbilityName());
-            abilityEntity.setXPos(serializableAbilityEntities.get(i).getXPos());
-            abilityEntity.setYPos(serializableAbilityEntities.get(i).getYPos());
-            abilityEntity.setWidth(serializableAbilityEntities.get(i).getWidth());
-            abilityEntity.setWidth(serializableAbilityEntities.get(i).getHeight());
-            abilityEntity.setDamage((long) serializableAbilityEntities.get(i).getDamage());
+            abilityEntity.setAbilityName(serializableAbilityEntity.getAbilityName());
+            abilityEntity.setXPos(serializableAbilityEntity.getXPos());
+            abilityEntity.setYPos(serializableAbilityEntity.getYPos());
+            abilityEntity.setWidth(serializableAbilityEntity.getWidth());
+            abilityEntity.setHeight(serializableAbilityEntity.getHeight());
+            abilityEntity.setDamage((long) serializableAbilityEntity.getDamage());
             abilityEntities.add(abilityEntity);
         }
         return abilityEntities;
