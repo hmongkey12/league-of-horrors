@@ -3,7 +3,6 @@ package com.league.game.gameConfig;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.league.game.models.AbilityEntity;
 import com.league.game.utils.ImageProcessor;
@@ -36,6 +35,8 @@ public class GameConfig {
         assetManager.finishLoading();
         return assetManager;
     }
+
+
 
     @Bean
     @Autowired

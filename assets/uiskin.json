@@ -1,0 +1,23 @@
+{
+  "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+    "default": {
+      "font": {
+        "file": "Roboto-Regular.ttf"
+      },
+      "fontColor": {
+        "r": 1,
+        "g": 1,
+        "b": 1,
+        "a": 1
+      },
+      "background": {
+        "file": "textfield.png",
+        "leftWidth": 8,
+        "rightWidth": 8,
+        "topHeight": 8,
+        "bottomHeight": 8
+      }
+    }
+  }
+}
+

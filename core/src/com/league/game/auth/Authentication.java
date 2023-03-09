@@ -12,7 +12,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 public class Authentication {
-    private static final String HASH_ALGORITHM = "SHA-256";
     private static final String DATABASE_URI = "http://localhost:8089";
 
     public URL login(String username, String password) {
@@ -26,9 +25,6 @@ public class Authentication {
     }
 
     public URL register(String username, String password) throws MalformedURLException, UnsupportedEncodingException {
-//      MessageDigest messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-//      byte[] hashedPassword = messageDigest.digest(password.getBytes());
-//      createURLWithPassword(username, hashedPassword.toString());
         return createURLWithQueryParameters(username, password);
     }
 

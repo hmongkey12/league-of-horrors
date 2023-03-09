@@ -15,6 +15,7 @@ import com.league.game.models.HeroGameEntity;
 import com.league.game.screens.DummyScreen;
 import com.league.game.screens.GameRenderScreen;
 import com.league.game.screens.HeroSelectionScreen;
+import com.league.game.screens.MainScreen;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -52,18 +53,21 @@ public class LeagueOfHorrors extends Game {
     public void create() {
         SpringApplication.run(LeagueOfHorrors.class);
 //        HttpHandler.requestUserData("bob", "1234");
-        playerId = UUID.randomUUID().toString();
-        udpNetworkHandler = new UDPNetworkHandler();
-        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
-        spriteBatch = new SpriteBatch();
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(LeagueOfHorrors.class);
-        assetManager = (AssetManager) ctx.getBean("assetManager");
-        abilityEntityMap = (Map<String, List<AbilityEntity>>) ctx.getBean("abilityEntityMap");
-        animationMap = (Map<String, Map<String, Animation<TextureRegion>>>) ctx.getBean("animationMap");
-        heroes = new HashMap<String, HeroGameEntity>();
-        if (udpNetworkHandler.getClientSocket() != null) {
-            setScreen(new HeroSelectionScreen(this));
-        }
+
+        setScreen(new MainScreen(this));
+
+//        playerId = UUID.randomUUID().toString();
+//        udpNetworkHandler = new UDPNetworkHandler();
+//        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
+//        spriteBatch = new SpriteBatch();
+//		ApplicationContext ctx = new AnnotationConfigApplicationContext(LeagueOfHorrors.class);
+//        assetManager = (AssetManager) ctx.getBean("assetManager");
+//        abilityEntityMap = (Map<String, List<AbilityEntity>>) ctx.getBean("abilityEntityMap");
+//        animationMap = (Map<String, Map<String, Animation<TextureRegion>>>) ctx.getBean("animationMap");
+//        heroes = new HashMap<String, HeroGameEntity>();
+//        if (udpNetworkHandler.getClientSocket() != null) {
+//            setScreen(new HeroSelectionScreen(this));
+//        }
     }
 
     @Override

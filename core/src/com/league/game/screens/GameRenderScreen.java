@@ -92,7 +92,6 @@ public class GameRenderScreen extends ScreenAdapter {
                 heroName = hero.getValue().getHeroName();
                 try {
                     if (hero.getKey().equals(gameManager.playerId)) {
-//                        System.out.println("hero is attacking: " + hero.getValue().isAttacking());
                         playerCamera.position.x = hero.getValue().getXPos();
                         playerCamera.update();
                     }
