@@ -45,7 +45,6 @@ public class UDPCreationHandler {
                 SerializableGameStateDecorator serializableGameStateDecorator = new SerializableGameStateDecorator(new BasicSerializer());
                 SerializableGameState serializableGameState = (SerializableGameState) serializableGameStateDecorator.deserialize(incomingDatagramPacket.getData());
                 if (serializableGameState != null) {
-                    System.out.println(serializableGameState.toString());
                     if (serializableGameState.getConnectedPlayers().get(playerId) != null) {
                         gameManager.isHeroCreated = true;
                     }

@@ -20,7 +20,6 @@ public class UDPUpdateHandler {
             SerializableGameState serializableGameState =
                     (SerializableGameState) serializableGameStateDecorator.deserialize(incomingDatagramPacket.getData());
             if (serializableGameState != null) {
-                System.out.println(serializableGameState.getConnectedPlayers().get(gameManager.playerId).toString());
                 gameManager.heroStateQueue.add(UDPStateHandler.replicateServerState(serializableGameState));
             }
         } catch (SocketTimeoutException e) {

@@ -81,12 +81,22 @@ task addSource {
     }
 }
 
+gwt {
+    gwtVersion '2.9.1'
+    // other GWT settings here
+}
+
+
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 tasks.checkGwt.dependsOn(addSource)
 checkGwt.war = file("war")
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
+dependencies {
+    implementation project(path: ':core')
+    implementation project(path: ':core')
+}
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-html"
