@@ -39,6 +39,7 @@ public class LeagueOfHorrors extends Game {
     public Boolean isHeroCreated = false;
     public String playerId;
     public String selectedHeroName;
+    public boolean playerAuthenticated = false;
 
     public LinkedList<Map<String, HeroGameEntity>> heroStateQueue;
 
@@ -52,20 +53,15 @@ public class LeagueOfHorrors extends Game {
     @SuppressWarnings("unchecked")
     public void create() {
         SpringApplication.run(LeagueOfHorrors.class);
-//        HttpHandler.requestUserData("bob", "1234");
-//        setScreen(new MainScreen(this));
-        playerId = UUID.randomUUID().toString();
-        udpNetworkHandler = new UDPNetworkHandler();
-        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
-        spriteBatch = new SpriteBatch();
 		ApplicationContext ctx = new AnnotationConfigApplicationContext(LeagueOfHorrors.class);
         assetManager = (AssetManager) ctx.getBean("assetManager");
         abilityEntityMap = (Map<String, List<AbilityEntity>>) ctx.getBean("abilityEntityMap");
         animationMap = (Map<String, Map<String, Animation<TextureRegion>>>) ctx.getBean("animationMap");
+        spriteBatch = new SpriteBatch();
+        playerId = UUID.randomUUID().toString();
+        heroStateQueue = new LinkedList<Map<String, HeroGameEntity>>();
         heroes = new HashMap<String, HeroGameEntity>();
-        if (udpNetworkHandler.getClientSocket() != null) {
-            setScreen(new HeroSelectionScreen(this));
-        }
+        setScreen(new MainScreen(this));
     }
 
     @Override

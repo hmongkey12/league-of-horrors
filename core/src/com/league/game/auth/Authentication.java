@@ -1,15 +1,11 @@
 package com.league.game.auth;
 
 
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 
 public class Authentication {
     private static final String DATABASE_URI = "http://localhost:8089";

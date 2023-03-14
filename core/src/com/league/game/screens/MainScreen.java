@@ -13,15 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.league.game.Handlers.HttpHandler;
 import com.league.game.LeagueOfHorrors;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
+import java.net.HttpURLConnection;
 
 
 public class MainScreen extends ScreenAdapter {
     private static final int BUTTON_WIDTH = 150;
     private static final int BUTTON_HEIGHT = 50;
     private Stage stage;
-    private LeagueOfHorrors gameManager;
+    private final LeagueOfHorrors gameManager;
     private TextField usernameField, passwordField;
 
 
@@ -47,6 +50,9 @@ public class MainScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+        if (gameManager.playerAuthenticated) {
+            gameManager.setScreen(new HeroSelectionScreen(gameManager));
+        }
     }
 
     @Override
@@ -59,7 +65,7 @@ public class MainScreen extends ScreenAdapter {
         stage.dispose();
     }
 
-    private class TextFieldChangeListener extends ChangeListener {
+    private static class TextFieldChangeListener extends ChangeListener {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
             // TODO: handle change
@@ -114,12 +120,15 @@ public class MainScreen extends ScreenAdapter {
     private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        // TODO: handle login
+        if (HttpHandler.requestUserData(username, password, "login") == HttpURLConnection.HTTP_OK) {
+            gameManager.playerAuthenticated = true;
+        }
     }
 
     private void handleRegistration() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         // TODO: handle registration
+//        HttpHandler.requestUserData(username, password, "register");
     }
 }

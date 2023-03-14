@@ -1,33 +1,23 @@
 package com.league.game.Handlers;
 
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.net.HttpStatus;
 import com.league.game.auth.Authentication;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.HttpUrl;
-import okhttp3.internal.http.HttpMethod;
-import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 @Slf4j
 public class HttpHandler {
 
-    public static void requestUserData(String username, String password) {
-        String responseData = null;
-        Scanner scanner = new Scanner(System.in);
-        String requestType = null;
+    public static int requestUserData(String username, String password, String requestType) {
         Authentication authentication = new Authentication();
-        int responseCode = 0;
-        while(responseCode != HttpURLConnection.HTTP_OK) {
+        int responseCode = HttpURLConnection.HTTP_UNAVAILABLE;
             try {
-                requestType = scanner.nextLine();
-                HttpURLConnection urlConnection = null;
+                HttpURLConnection urlConnection;
                 if (requestType.equalsIgnoreCase("login")) {
                     URL url = authentication.login(username, password);
                     urlConnection = configureUrlConnection(url, "GET");
@@ -37,23 +27,11 @@ public class HttpHandler {
                     urlConnection = configureUrlConnection(url, "POST");
                     responseCode = performPostRequest(urlConnection);
                 }
-            } catch (SocketTimeoutException e) {
-            } catch (UnsupportedEncodingException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
-                break;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                break;
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
-            } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        }
+        return responseCode;
     }
 
     private static HttpURLConnection configureUrlConnection (URL url, String method) throws IOException {
@@ -73,14 +51,15 @@ public class HttpHandler {
 
     private static int performGetRequest(HttpURLConnection urlConnection) throws IOException {
         if (urlConnection != null){
-            BufferedReader bufferedReader = null;
-            InputStreamReader inputStreamReader = null;
+            BufferedReader bufferedReader;
+            InputStreamReader inputStreamReader;
             int responseCode = urlConnection.getResponseCode();
             String responseData;
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 inputStreamReader = new InputStreamReader(urlConnection.getInputStream());
                 bufferedReader = new BufferedReader(inputStreamReader);
                 responseData = bufferedReader.readLine();
+                System.out.println(responseData);
                 bufferedReader.close();
                 inputStreamReader.close();
                 return HttpURLConnection.HTTP_OK;
@@ -93,7 +72,7 @@ public class HttpHandler {
     private static int performPostRequest(HttpURLConnection urlConnection) throws IOException, JSONException {
         if (urlConnection != null) {
             OutputStream outputStream = urlConnection.getOutputStream();
-            byte[] outgoingData = null;
+            byte[] outgoingData;
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username","alice");
             jsonObject.put("password","1234");
@@ -101,8 +80,7 @@ public class HttpHandler {
             outputStream.write(outgoingData);
             outputStream.flush();
             outputStream.close();
-            int responseCode = urlConnection.getResponseCode();
-            return responseCode;
+            return urlConnection.getResponseCode();
         }
         return HttpURLConnection.HTTP_BAD_REQUEST;
     }
