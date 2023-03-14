@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.league.game.Handlers.UDPCreationHandler;
+import com.league.game.Handlers.UDPNetworkHandler;
 import com.league.game.LeagueOfHorrors;
 import com.league.game.utils.ImageProcessor;
 
@@ -20,7 +21,15 @@ public class LoadingScreen extends ScreenAdapter {
     }
     @Override
     public void show() {
-        UDPCreationHandler.handleCreation(gameManager);
+        if (gameManager.udpNetworkHandler == null) {
+            gameManager.udpNetworkHandler = new UDPNetworkHandler();
+            if (gameManager.udpNetworkHandler.getClientSocket() != null) {
+                gameManager.setScreen(new HeroSelectionScreen(gameManager));
+            }
+        }
+        else if (!gameManager.isHeroCreated) {
+            UDPCreationHandler.handleCreation(gameManager);
+        }
         loadingAnimation = ImageProcessor.getImageAnimation(LOADING_IMAGE_NAME, gameManager.assetManager);
     }
 
