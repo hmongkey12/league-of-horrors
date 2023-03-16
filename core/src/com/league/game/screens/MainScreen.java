@@ -129,6 +129,6 @@ public class MainScreen extends ScreenAdapter {
         String username = usernameField.getText();
         String password = passwordField.getText();
         // TODO: handle registration
-//        HttpHandler.requestUserData(username, password, "register");
+        HttpHandler.requestUserData(username, password, "register");
     }
 }
