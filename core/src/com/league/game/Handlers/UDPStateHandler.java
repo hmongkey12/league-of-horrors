@@ -17,6 +17,7 @@ public class UDPStateHandler {
         Map<String, HeroGameEntity> newPlayersOnClient = new HashMap<String, HeroGameEntity>();
         for (SerializableHeroEntity serializableHeroEntity : gameState.getConnectedPlayers().values()) {
             HeroGameEntity heroGameEntity = new HeroGameEntity();
+            heroGameEntity.setHealth(serializableHeroEntity.getHealth());
             heroGameEntity.setHeroName(serializableHeroEntity.getHeroName());
             heroGameEntity.setHeroId(serializableHeroEntity.getId());
             heroGameEntity.setXPos(serializableHeroEntity.getXPos());
