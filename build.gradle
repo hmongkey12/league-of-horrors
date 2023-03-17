@@ -76,6 +76,12 @@ project(":desktop") {
             mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE")
         }
     }
+
+    tasks.withType(JavaExec) {
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            jvmArgs "-XstartOnFirstThread"
+        }
+    }
 }
 
 project(":ios") {
