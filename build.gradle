@@ -132,7 +132,7 @@ project(":core") {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation 'com.github.hmongkey12:league_of_horrors_shared:1.0.0:plain'
+        implementation 'com.github.hmongkey12:league_of_horrors_shared:1.0.2:plain'
         implementation 'com.googlecode.json-simple:json-simple:1.1'
         implementation 'io.socket:socket.io-client:2.1.0'
         implementation 'org.springframework.boot:spring-boot-starter'
