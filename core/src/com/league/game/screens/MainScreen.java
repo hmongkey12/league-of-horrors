@@ -83,7 +83,7 @@ public class MainScreen extends ScreenAdapter {
     }
 
     private TextField createTextField(String messageText, boolean password) {
-        TextField.TextFieldStyle style = new TextField.TextFieldStyle(new BitmapFont(), Color.BLACK, null, null, null);
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle(new BitmapFont(), Color.WHITE, null, null, null);
         TextField textField = new TextField("", style);
         textField.setMessageText(messageText);
         if (password) {

@@ -49,10 +49,6 @@ public class UDPCreationHandler {
                         gameManager.isHeroCreated = true;
                     }
                 }
-            } catch (SocketTimeoutException e) {
-                e.printStackTrace();
-            } catch (EOFException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
