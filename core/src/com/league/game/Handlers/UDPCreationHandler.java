@@ -4,55 +4,62 @@ import com.league.game.LeagueOfHorrors;
 import com.serializers.*;
 import org.json.simple.JSONObject;
 
-import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.io.IOException;
+
 public class UDPCreationHandler {
-
-    private static byte[] incomingDatagramPacketBuffer;
-
-    private static byte[] outgoingDatagramPacketBuffer;
-    private static DatagramPacket outgoingDatagramPacket;
-    private static DatagramPacket incomingDatagramPacket;
+    private static final int BUFFER_SIZE = 16000;
+    private static final int SERVER_PORT = 8086;
+    private static byte[] incomingBuffer;
+    private static byte[] outgoingBuffer;
+    private static DatagramPacket outgoingPacket;
+    private static DatagramPacket incomingPacket;
     private static Map<String, String> creationCommand;
-
     private static String playerId;
 
-    public static final int SERVER_PORT = 8086;
-
     public static void handleCreation(LeagueOfHorrors gameManager) {
+        initialize(gameManager);
+        sendCreationRequest(gameManager);
+        receiveAndProcessResponse(gameManager);
+    }
+
+    private static void initialize(LeagueOfHorrors gameManager) {
         playerId = gameManager.getPlayerId();
-        incomingDatagramPacketBuffer = new byte[16000];
-        outgoingDatagramPacketBuffer = new byte[16000];
-        incomingDatagramPacket = new DatagramPacket(incomingDatagramPacketBuffer, incomingDatagramPacketBuffer.length);
-        creationCommand = new HashMap<String, String>();
+        incomingBuffer = new byte[BUFFER_SIZE];
+        outgoingBuffer = new byte[BUFFER_SIZE];
+        incomingPacket = new DatagramPacket(incomingBuffer, incomingBuffer.length);
+        creationCommand = new HashMap<>();
         creationCommand.put("createHero", gameManager.getSelectedHeroName() + "_" + playerId);
-        outgoingDatagramPacketBuffer = JSONObject.toJSONString(creationCommand).getBytes();
+        outgoingBuffer = JSONObject.toJSONString(creationCommand).getBytes();
+    }
+
+    private static void sendCreationRequest(LeagueOfHorrors gameManager) {
         try {
             gameManager.udpNetworkHandler.getClientSocket().setSoTimeout(5000);
-            outgoingDatagramPacket = new DatagramPacket(outgoingDatagramPacketBuffer, outgoingDatagramPacketBuffer.length,
+            outgoingPacket = new DatagramPacket(outgoingBuffer, outgoingBuffer.length,
                     InetAddress.getByName("127.0.0.1"), SERVER_PORT);
+            gameManager.udpNetworkHandler.getClientSocket().send(outgoingPacket);
         } catch (Exception e) {
             e.printStackTrace();
         }
-            try {
-                gameManager.udpNetworkHandler.getClientSocket().send(outgoingDatagramPacket);
-                gameManager.udpNetworkHandler.getClientSocket().receive(incomingDatagramPacket);
-                SerializableGameStateDecorator serializableGameStateDecorator = new SerializableGameStateDecorator(new BasicSerializer());
-                SerializableGameState serializableGameState = (SerializableGameState) serializableGameStateDecorator.deserialize(incomingDatagramPacket.getData());
-                if (serializableGameState != null) {
-                    if (serializableGameState.getConnectedPlayers().get(playerId) != null) {
-                        gameManager.isHeroCreated = true;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+    }
+
+    private static void receiveAndProcessResponse(LeagueOfHorrors gameManager) {
+        try {
+            gameManager.udpNetworkHandler.getClientSocket().receive(incomingPacket);
+            SerializableGameStateDecorator stateDecorator = new SerializableGameStateDecorator(new BasicSerializer());
+            SerializableGameState gameState = (SerializableGameState) stateDecorator.deserialize(incomingPacket.getData());
+            if (gameState != null && gameState.getConnectedPlayers().get(playerId) != null) {
+                gameManager.isHeroCreated = true;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
