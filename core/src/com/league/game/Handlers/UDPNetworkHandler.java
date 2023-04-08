@@ -18,6 +18,11 @@ public class UDPNetworkHandler {
     private byte[] outgoingDatagramPacketBuffer = new byte[16000];
     public static final int CLIENT_PORT = 8085;
     public static final int SERVER_PORT = 8086;
+
+    /**
+     Constructor that initializes the UDP client socket and sets the IP address and port number for the server.
+     @throws Exception if there is an error while creating the DatagramSocket or getting the InetAddress for the server IP address.
+     */
    public UDPNetworkHandler() {
        try{
            clientSocket = new DatagramSocket() ;
@@ -30,6 +35,11 @@ public class UDPNetworkHandler {
        }
    }
 
+    /**
+     Sends a string message to the game server using UDP.
+     @param message the string message to be sent to the server.
+     @throws Exception if there is an error while sending the datagram packet.
+     */
    public void sendData(String message) {
        try {
            outgoingDatagramPacketBuffer = message.getBytes();
@@ -38,5 +48,4 @@ public class UDPNetworkHandler {
            e.printStackTrace();
        }
    }
-
 }
